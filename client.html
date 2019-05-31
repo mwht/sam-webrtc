@@ -3,7 +3,7 @@
 	<head>
 		<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
 		<script>
-			function connect() {
+			function connect(id) {
 				var userMedia = null;
 			    if (navigator.getDisplayMedia) {
 				  userMedia = navigator.getDisplayMedia({video: true});
@@ -24,17 +24,19 @@
 					peer.on('open', function(id) {
 						document.getElementById("our-id").innerHTML = id;
 					});
-					peer.call(document.getElementById("their-id").value, mediaStream);
-						document.getElementById("connbutton").disabled = true;
+					peer.call(document.getElementById("their-id" + id).value, mediaStream);
+						document.getElementById("connbutton" + id).disabled = true;
+						document.getElementById("their-id" + id).disabled = true;
 					});
-					var dataConnection = peer.connect(document.getElementById("their-id").value);
-					console.log(dataConnection);
 			}
 		</script>
 	</head>
 	<body>
 		Our ID: <span id="our-id">...</span><br />
-		Their ID: <input id="their-id" />
-		<button onclick="connect()" id="connbutton">Connect</button>
+		<table id="connections" border=0>
+			<tr>
+				<td>Their ID #1:</td><td><input id="their-id1" /></td><td><button onclick="connect(1)" id="connbutton1">Connect</button></td>
+			</tr>
+		</table>
 	</body>
 </html>
