@@ -3,6 +3,7 @@
 	<head>
 		<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
 		<script>
+			var message;
 			function connect() {
 				const peer = new Peer({
 				  config: {'iceServers': [
@@ -23,9 +24,33 @@
 					});
 				});
 				peer.on('connect', dataConnection => {
-					console.log(dataConnection);
+					message = dataConnection;
 				});
 				document.getElementById("connbutton").disabled = true;
+			}
+
+			window.onkeyup = function(e) {
+				let json = {
+					"type": "keyboard",
+					"event": {
+						"eventType": "up",
+						"eventData": e.key
+					}
+				}
+				message.send(JSON.stringify(json))
+				console.log(JSON.stringify(json));
+			}
+
+			window.onkeydown = function(e) {
+				let json = {
+					"type": "keyboard",
+					"event": {
+						"eventType": "down",
+						"eventData": e.key
+					}
+				}
+
+				console.log(json);
 			}
 		</script>
 	</head>
