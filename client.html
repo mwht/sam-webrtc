@@ -3,6 +3,14 @@
 	<head>
 		<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
 		<script>
+			function appendNewUiField(lastId) {
+				var newId = parseInt(lastId) + 1;
+				var tableRow = document.createElement("tr");
+				tableRow.innerHTML = "<td>Their ID #" + newId + ":</td><td><input id=\"their-id" + newId + "\" /></td><td><button onclick=\"connect(" + newId + ")\" id=\"connbutton" + newId + "\">Connect</button></td>";
+				
+				document.getElementById("connections").appendChild(tableRow);
+			}
+		
 			function connect(id) {
 				var userMedia = null;
 			    if (navigator.getDisplayMedia) {
@@ -27,6 +35,7 @@
 					peer.call(document.getElementById("their-id" + id).value, mediaStream);
 						document.getElementById("connbutton" + id).disabled = true;
 						document.getElementById("their-id" + id).disabled = true;
+						appendNewUiField(id);
 					});
 			}
 		</script>
