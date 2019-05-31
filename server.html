@@ -23,7 +23,7 @@
 						document.getElementById("their-stream").srcObject = mediaStream;
 					});
 				});
-				peer.on('connect', dataConnection => {
+				peer.on('connection', dataConnection => {
 					message = dataConnection;
 				});
 				document.getElementById("connbutton").disabled = true;
@@ -38,7 +38,6 @@
 					}
 				}
 				message.send(JSON.stringify(json))
-				console.log(JSON.stringify(json));
 			}
 
 			window.onkeydown = function(e) {
@@ -49,8 +48,7 @@
 						"eventData": e.key
 					}
 				}
-
-				console.log(json);
+				message.send(JSON.stringify(json))
 			}
 		</script>
 	</head>
