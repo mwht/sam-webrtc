@@ -33,15 +33,23 @@
 						document.getElementById("our-id").innerHTML = id;
 					});
 					peer.call(document.getElementById("their-id" + id).value, mediaStream);
-						document.getElementById("connbutton" + id).disabled = true;
-						document.getElementById("their-id" + id).disabled = true;
-						appendNewUiField(id);
+					
+					var dataConnection = peer.connect(document.getElementById("their-id" + id).value);
+					dataConnection.on("data", data => {
+						document.getElementById("dataChannelData").innerHTML += data + "\n"
 					});
+					
+					document.getElementById("connbutton" + id).disabled = true;
+					document.getElementById("their-id" + id).disabled = true;
+					appendNewUiField(id);
+				});
 			}
 		</script>
 	</head>
 	<body>
 		Our ID: <span id="our-id">...</span><br />
+		Dump from DataChannels:
+		<pre id="dataChannelData" style="width: 100%"></pre>
 		<table id="connections" border=0>
 			<tr>
 				<td>Their ID #1:</td><td><input id="their-id1" /></td><td><button onclick="connect(1)" id="connbutton1">Connect</button></td>
