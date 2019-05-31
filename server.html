@@ -2,8 +2,13 @@
 <html>
 	<head>
 		<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+		<script src="./gamepad.js"></script>
 		<script>
 			var message;
+			var gamepad = new Gamepad();
+
+
+
 			function connect() {
 				const peer = new Peer({
 				  config: {'iceServers': [
@@ -29,30 +34,90 @@
 				document.getElementById("connbutton").disabled = true;
 			}
 
-			window.onkeyup = function(e) {
-				let json = {
-					"type": "keyboard",
-					"event": {
-						"eventType": "up",
-						"eventData": e.key
+			// GAMEPAD
+
+			gamepad.bind(Gamepad.Event.CONNECTED, function(device) {
+					console.log("Connected");
+				});
+				gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e) {
+					let json = {
+						"type": "gamepad",
+						"event": {
+							"eventType": "down",
+							"eventData": e.control
+						}
 					}
+					message.send(JSON.stringify(json));
+				});
+
+				gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
+					let json = {
+						"type": "gamepad",
+						"event": {
+							"eventType": "up",
+							"eventData": e.control
+						}
+					}
+					message.send(JSON.stringify(json));
+				});
+
+				gamepad.bind(Gamepad.Event.BUTTON_HOLD, function(e) {
+					let json = {
+						"type": "gamepad",
+						"event": {
+							"eventType": "hold",
+							"eventData": e.control
+						}
+					}
+					message.send(JSON.stringify(json));
+				});
+
+				gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+					let json = {
+						"type": "gamepad",
+						"event": {
+							"eventType": "move",
+							"eventData": e.value
+						}
+					}
+					document.getElementById("pad").innerHTML = e.value;
+					message.send(JSON.stringify(json));
+				});
+
+				if (!gamepad.init()) {
+					console.log("failed");
+					// Your browser does not support gamepads, get the latest Google Chrome or Firefox
 				}
-				message.send(JSON.stringify(json))
+
+				// KEYBOADR
+
+				window.onkeyup = function(e) {
+					console.log(e);
+					let json = {
+						"type": "keyboard",
+						"event": {
+							"eventType": "up",
+							"eventData": e.key
+						}
+					}
+					message.send(JSON.stringify(json));
+				}
+
+				window.onkeydown = function(e) {
+					let json = {
+						"type": "keyboard",
+						"event": {
+							"eventType": "down",
+							"eventData": e.key
+						}
+				}
+				message.send(JSON.stringify(json));
 			}
 
-			window.onkeydown = function(e) {
-				let json = {
-					"type": "keyboard",
-					"event": {
-						"eventType": "down",
-						"eventData": e.key
-					}
-				}
-				message.send(JSON.stringify(json))
-			}
 		</script>
 	</head>
 	<body>
+		<div id="pad"></div>
 		<video autoplay id="their-stream"></video><br />
 		Our ID: <span id="our-id">...</span>
 		<button onclick="connect()" id="connbutton">Connect</button>
