@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+		<script>
+			function connect() {
+				const peer = new Peer({
+				  config: {'iceServers': [
+					{ url: 'stun:stun.l.google.com:19302' },
+				  ]}
+				});
+				peer.on('error', err => {
+					alert(err);
+				});
+				peer.on('open', function(id) {
+					document.getElementById("our-id").innerHTML = id;
+				});
+				peer.on('call', mediaConnection => {
+					console.log("inbound connection");
+					mediaConnection.answer();
+					mediaConnection.on('stream', mediaStream => {
+						document.getElementById("their-stream").srcObject = mediaStream;
+					});
+				});
+				peer.on('connect', dataConnection => {
+					console.log(dataConnection);
+				});
+				document.getElementById("connbutton").disabled = true;
+			}
+		</script>
+	</head>
+	<body>
+		<video autoplay id="their-stream"></video><br />
+		Our ID: <span id="our-id">...</span>
+		<button onclick="connect()" id="connbutton">Connect</button>
+	</body>
+</html>

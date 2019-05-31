@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+		<script>
+			function connect() {
+				var userMedia = null;
+			    if (navigator.getDisplayMedia) {
+				  userMedia = navigator.getDisplayMedia({video: true});
+				} else if (navigator.mediaDevices.getDisplayMedia) {
+				  userMedia = navigator.mediaDevices.getDisplayMedia({video: true});
+				} else {
+				  userMedia = navigator.mediaDevices.getUserMedia({video: {mediaSource: 'screen'}});
+				}
+				userMedia.then(mediaStream => {
+					const peer = new Peer({
+					  config: {'iceServers': [
+						{ url: 'stun:stun.l.google.com:19302' },
+					  ]}
+					});
+					peer.on('error', err => {
+						alert(err);
+					});
+					peer.on('open', function(id) {
+						document.getElementById("our-id").innerHTML = id;
+					});
+					peer.call(document.getElementById("their-id").value, mediaStream);
+						document.getElementById("connbutton").disabled = true;
+					});
+					var dataConnection = peer.connect(document.getElementById("their-id").value);
+					console.log(dataConnection);
+			}
+		</script>
+	</head>
+	<body>
+		Our ID: <span id="our-id">...</span><br />
+		Their ID: <input id="their-id" />
+		<button onclick="connect()" id="connbutton">Connect</button>
+	</body>
+</html>
