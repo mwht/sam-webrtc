@@ -7,8 +7,6 @@
 			var message;
 			var gamepad = new Gamepad();
 
-
-
 			function connect() {
 				const peer = new Peer({
 				  config: {'iceServers': [
@@ -47,7 +45,9 @@
 							"eventData": e.control
 						}
 					}
-					message.send(JSON.stringify(json));
+					if(message !== undefined)
+					//console.log(json);
+						message.send(JSON.stringify(json));
 				});
 
 				gamepad.bind(Gamepad.Event.BUTTON_UP, function(e) {
@@ -58,30 +58,43 @@
 							"eventData": e.control
 						}
 					}
-					message.send(JSON.stringify(json));
+					if(message !== undefined)
+						message.send(JSON.stringify(json));
 				});
 
 				gamepad.bind(Gamepad.Event.BUTTON_HOLD, function(e) {
 					let json = {
 						"type": "gamepad",
 						"event": {
-							"eventType": "hold",
+							"eventType": "down",
 							"eventData": e.control
 						}
 					}
-					message.send(JSON.stringify(json));
+					if(message !== undefined)
+						message.send(JSON.stringify(json));
 				});
 
 				gamepad.bind(Gamepad.Event.AXIS_CHANGED, function(e) {
+					let axiNumber = 0;
+					if(e.axis === "LEFT_STICK_X")
+						axiNumber = 0;
+					if(e.axis === "LEFT_STICK_Y")
+						axiNumber = 1;
+					if(e.axis === "RIGHT_STICK_X")
+						axiNumber = 2;
+					if(e.axis === "RIGHT_STICK_Y")
+						axiNumber = 3;
+
 					let json = {
 						"type": "gamepad",
 						"event": {
 							"eventType": "move",
-							"eventData": e.value
+							"eventData": [axiNumber, e.value]
 						}
 					}
 					document.getElementById("pad").innerHTML = e.value;
-					message.send(JSON.stringify(json));
+					if(message !== undefined)
+						message.send(JSON.stringify(json));
 				});
 
 				if (!gamepad.init()) {
