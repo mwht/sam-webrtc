@@ -113,7 +113,8 @@
 							"eventData": e.key
 						}
 					}
-					message.send(JSON.stringify(json));
+					if(message !== undefined)
+						message.send(JSON.stringify(json));
 				}
 
 				window.onkeydown = function(e) {
@@ -124,7 +125,8 @@
 							"eventData": e.key
 						}
 				}
-				message.send(JSON.stringify(json));
+				if(message !== undefined)
+					message.send(JSON.stringify(json));
 			}
 
 		</script>
