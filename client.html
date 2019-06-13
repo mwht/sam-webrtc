@@ -13,6 +13,7 @@
 		
 			function connect(id) {
 				var userMedia = null;
+				var websocket = new WebSocket("ws://localhost:8765");
 			    if (navigator.getDisplayMedia) {
 				  userMedia = navigator.getDisplayMedia({video: true});
 				} else if (navigator.mediaDevices.getDisplayMedia) {
@@ -37,6 +38,7 @@
 					var dataConnection = peer.connect(document.getElementById("their-id" + id).value);
 					dataConnection.on("data", data => {
 						document.getElementById("dataChannelData").innerHTML += data + "\n"
+						websocket.send(data);
 					});
 					
 					document.getElementById("connbutton" + id).disabled = true;
